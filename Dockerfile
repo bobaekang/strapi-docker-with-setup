@@ -8,7 +8,7 @@ RUN echo "unsafe-perm = true" >> ~/.npmrc
 
 RUN npm install -g strapi@3.0.0-alpha.26.2
 
-COPY strapi*.sh ./
+COPY strapi*.sh index.html ./
 
 RUN chmod +x ./strapi.sh
 
