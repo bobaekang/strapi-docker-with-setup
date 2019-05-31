@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  reverse-proxy:
+    image: traefik
+    command: --api --docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock #
+
+  api:
+    image: test/strapi-docker
+    labels:
+      - "traefik.frontend.rule=Host:strapi.docker.localhost"
+    environment:
+      - APP_NAME=strapi-app
+    ports:
+      - 1337:1337
+    volumes:
+      - strapi-app:/usr/src/api/strapi-app
+    restart: always
+
+volumes:
+  strapi-app:
