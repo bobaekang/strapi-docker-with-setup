@@ -11,12 +11,14 @@ trap _stopStrapi SIGTERM SIGINT
 
 cd /usr/src/api
 
-APP_NAME=${APP_NAME:-app}
+APP_NAME=${APP_NAME:-strapi-app}
 
 if [ ! -f "$APP_NAME/package.json" ]
 then
-    strapi new ${APP_NAME} --dbclient=sqlite
-    cp -f strapi-*.sh $APP_NAME
+    strapi new $APP_NAME --dbclient=sqlite &
+    wait "$!"
+    
+    cp -f index.html $APP_NAME/public
 elif [ ! -d "$APP_NAME/node_modules" ]
 then
     npm install --prefix ./$APP_NAME
@@ -26,11 +28,5 @@ cd $APP_NAME
 
 strapi start &
 strapiPID=$!
-
-if [ -z "$(ls api)" ]
-then    
-    sh strapi-check.sh
-    strapi install graphql
-fi
 
 wait "$strapiPID"
