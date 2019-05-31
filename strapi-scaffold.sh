@@ -1,18 +1,33 @@
 #!/bin/sh
+TRY=20
 
-## define post type
-TYPE_POST="post"
-TYPE_POST+=" name:string description:text"
+APP_NAME=${1:-"strapi-app"}
+cd $APP_NAME
 
-## define comment type
-TYPE_COMMENT="comment"
-TYPE_COMMENT+=" user:string body:text"
-
-## generate api for content types
-echo -e "\xe2\x8f\xb3 Scaffolding content types..."
-
-eval "strapi generate:api $TYPE_POST"
-eval "strapi generate:api $TYPE_COMMENT"
-
-echo -e "\033[0;32m\xe2\x9c\x94 \033[0mScaffold content types."
-echo -e "\xe2\x9d\x97 Make sure to manually add relevant media and relations fields!"
+while true
+do
+    STATUS=$(curl -s -o /dev/null -w '%{http_code}' localhost:1337)
+    
+    if [ "$STATUS" -eq 200 ]
+    then
+        echo -e "\033[0;32m\xe2\x9c\x94 \033[0mStrapi running."
+        
+        # install plugin
+        strapi install graphql &
+        wait "$!"
+        
+        # generate api
+        sh ../strapi-generate.sh &
+        wait "$!"
+        echo -e "\xe2\x9d\x97 Make sure to manually add media and relations fields!"
+        
+        break
+    elif [ "$TRY" -eq 0 ]
+    then
+        echo -e "\xe2\x9d\x97 Timeout."
+        break
+    fi
+    
+    TRY=$(($TRY-1))
+    sleep 3
+done
