@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  api:
+    build:
+      dockerfile: mongo.Dockerfile
+    image: test/strapi-docker-mongo
+    environment:
+      - DATABASE_CLIENT=mongo
+      - DATABASE_HOST=db
+      - DATABASE_PORT=27017
+      - DATABASE_NAME=strapi
+      - DATABASE_USERNAME=
+      - DATABASE_PASSWORD=
+      - DATABASE_SSL=false
+      - DATABASE_AUTHENTICATION_DATABASE=strapi
+      - HOST=localhost
+
+  db:
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=strapi
+    ports:
+      - 27017:27017
+    volumes:
+      - db-data:/data/db
+    restart: always
+
+volumes:
+  db-data:
