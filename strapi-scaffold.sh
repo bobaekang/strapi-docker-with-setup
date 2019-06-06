@@ -12,6 +12,9 @@ do
     then
         echo -e "\033[0;32m\xe2\x9c\x94 \033[0mStrapi running."
         
+        # replace index.html
+        cp -f ../index.html public
+        
         # install plugin
         strapi install graphql &
         wait "$!"
