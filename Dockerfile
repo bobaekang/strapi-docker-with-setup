@@ -1,7 +1,5 @@
 FROM node:11-alpine
 
-RUN apk add --no-cache curl
-
 WORKDIR /usr/src/api
 
 RUN echo "unsafe-perm = true" >> ~/.npmrc
