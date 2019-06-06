@@ -11,6 +11,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock #
 
   api:
+    build: .
     image: test/strapi-docker
     labels:
       - "traefik.frontend.rule=Host:strapi.docker.localhost"
